@@ -9,7 +9,7 @@
 
 ---
 
-## 📌 Project Overview
+##  Project Overview
 
 | Item | Detail |
 |------|--------|
@@ -42,7 +42,7 @@ WiFi Router (Tx)  ──── WiFi Signal ────►  Raspberry Pi 4 (Rx)
 
 ---
 
-## 📁 Repository Structure
+##  Repository Structure
 
 ```
 CSI-HAR/
@@ -50,31 +50,25 @@ CSI-HAR/
 ├── README.md                        # This file
 │
 ├── capture/
-│   ├── csi_capture.sh               # Main CSI data capture script (Raspberry Pi)
-│   └── packet_sender.py             # UDP packet generator (runs on laptop)
+│   └── csi_capture.sh               # Main CSI data capture script (Raspberry Pi)
+│   
 │
 ├── traffic_generators/
-│   ├── csi_ping_constant.py         # Constant-rate ping traffic generator
-│   ├── csi_traffic_generator.py     # General traffic generator
-│   ├── csi_traffic_http.py          # HTTP-based traffic generator
-│   ├── ping_service.py              # Ping service v1
-│   ├── ping_service2.py             # Ping service v2
-│   └── udp_ping_service.py          # UDP ping service
-│
+│   └── csi_ping_constant.py         # Constant-rate ping traffic generator
+│   
 ├── processing/
 │   ├── CSI_Data_Processing.ipynb    # Full CSI data processing & visualization
 │   └── Extract_New_CSI_Data.ipynb   # CSI extraction from .pcap files
 │
-├── docs/
-│   ├── CSI_HAR_Protocol_v3.pdf      # Data collection protocol
-│   └── CSI_Data_Collection_Complete_Guide.pdf  # Collection guide
+├── Processing_Results/
+│   └── CSI Data Preprocessing Final Report
 │
 └── .gitignore                       # Excludes large data files
 ```
 
 ---
 
-## 🛠️ System Setup
+##  System Setup
 
 ### Hardware Requirements
 - **Raspberry Pi 4** (with Nexmon CSI firmware)
@@ -98,7 +92,7 @@ pip install numpy pandas matplotlib scipy scikit-learn
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Step 1: Start CSI Capture on Raspberry Pi
 ```bash
@@ -124,7 +118,7 @@ Open `processing/CSI_Data_Processing.ipynb` in Jupyter Notebook to:
 
 ---
 
-## 📊 Data Collection Protocol
+##  Data Collection Protocol
 
 - **6 Subjects** × **6 Activities** × **15 Rx Positions** = **540 recordings**
 - Each recording: **5 minutes** at **200 packets/sec**
@@ -133,7 +127,7 @@ Open `processing/CSI_Data_Processing.ipynb` in Jupyter Notebook to:
 
 ---
 
-## 🔬 Technical Details
+##  Technical Details
 
 ### CSI Extraction
 - Uses **Nexmon CSI** firmware on Raspberry Pi 4's Broadcom BCM43455c0 WiFi chip
@@ -154,13 +148,13 @@ Open `processing/CSI_Data_Processing.ipynb` in Jupyter Notebook to:
 
 ---
 
-## 🤝 Collaboration
+##  Collaboration
 
 This project is developed at **DeepEmbed Lab, The Islamia University of Bahawalpur (IUB), Pakistan** in collaboration with a UK-based research team.
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
@@ -171,3 +165,4 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 **Matee ur Rasool**
 BSc Electronic Engineering | The Islamia University of Bahawalpur
 📧 [your-email@example.com]
+
