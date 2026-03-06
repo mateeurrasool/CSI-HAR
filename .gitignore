@@ -1,0 +1,43 @@
+# ===========================
+#  CSI-HAR .gitignore
+# ===========================
+
+# ----- Large Data Files -----
+*.pcap
+*.pcapng
+*.csv
+*.xlsx
+*.xls
+
+# ----- Jupyter Notebook Checkpoints -----
+.ipynb_checkpoints/
+
+# ----- Python -----
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# ----- OS Files -----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ----- IDE -----
+.vscode/
+.idea/
+
+# ----- Raw Data Folders -----
+CSI_Data-1/
+CSI_Data-2/
+Client Data/
+csi_data/
+
+# ----- Temporary -----
+*.tmp
+*.log
