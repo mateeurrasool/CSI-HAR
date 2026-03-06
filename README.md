@@ -160,9 +160,10 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ---
 
-## 📬 Contact
+##  Contact
 
 **Matee ur Rasool**
 BSc Electronic Engineering | The Islamia University of Bahawalpur
-📧 [your-email@example.com]
+ [engrmateeurrasool@gmail.com]
+
 
