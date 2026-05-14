@@ -5,165 +5,391 @@
 [![CSI Tool](https://img.shields.io/badge/CSI%20Tool-Nexmon-green.svg)](https://github.com/seemoo-lab/nexmon_csi)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> **Device-free human activity recognition using WiFi CSI (Channel State Information) signals and machine learning.** This project captures changes in WiFi signal patterns caused by human body movements and classifies activities such as walking, sitting, running, jumping, and falling — without any wearable sensors.
+> **Device-free Human Activity Recognition using WiFi CSI (Channel State Information) signals and Machine Learning.**
+
+This project captures variations in WiFi signal propagation caused by human body movements and classifies activities such as walking, running, sitting, jumping, falling, and idle states — without requiring wearable sensors or cameras.
 
 ---
 
-##  Project Overview
+# Project Overview
 
 | Item | Detail |
 |------|--------|
-| **Goal** | Classify 6 human activities using WiFi CSI data |
+| **Goal** | Classify human activities using WiFi CSI data |
 | **Activities** | Sit/Stand, Walk, Run, Jump, Fall, Idle |
 | **Hardware** | Raspberry Pi 4 (Receiver) + WiFi Router (Transmitter) |
 | **CSI Tool** | [Nexmon CSI Extractor](https://github.com/seemoo-lab/nexmon_csi) |
-| **Subjects** | 6 participants |
-| **Rx Positions** | 15 receiver locations (LOS & NLOS) |
-| **Channel** | WiFi Channel 6, 20 MHz, 1×1 MIMO |
+| **Subjects** | 6 Participants |
+| **Receiver Positions** | 15 Rx locations (LOS & NLOS) |
+| **Channel** | WiFi Channel 6 |
+| **Bandwidth** | 20 MHz |
+| **MIMO Configuration** | 1×1 MIMO |
+| **Packet Rate** | 200 Packets/sec |
 
-### How It Works
+---
 
-```
-WiFi Router (Tx)  ──── WiFi Signal ────►  Raspberry Pi 4 (Rx)
-                          │
-                    Human performs
-                    an activity
-                    (walk, sit, etc.)
-                          │
-                  Signal is disturbed
-                  by body movements
-                          │
-                    CSI data captured
-                    via Nexmon tool
-                          │
-                    ML model classifies
-                    the activity
+# System Architecture
+
+```text
+WiFi Router (Tx)
+        │
+        │  WiFi Signal
+        ▼
+Raspberry Pi 4 (Rx + Nexmon CSI)
+        │
+        │  Human activity disturbs signal propagation
+        ▼
+CSI Data Captured (.pcap)
+        │
+        ▼
+Signal Processing Pipeline
+        │
+        ▼
+Machine Learning Model
+        │
+        ▼
+Human Activity Classification
 ```
 
 ---
 
-##  Repository Structure
+# Repository Structure
 
-```
+```text
 CSI-HAR/
 │
-├── README.md                        # This file
+├── README.md
 │
 ├── capture/
-│   └── csi_capture.sh               # Main CSI data capture script (Raspberry Pi)
-│   
+│   └── csi_capture.sh
 │
 ├── traffic_generators/
-│   └── csi_ping_constant.py         # Constant-rate ping traffic generator
-│   
+│   └── csi_ping_constant.py
+│
 ├── processing/
-│   ├── CSI_Data_Processing.ipynb    # Full CSI data processing & visualization
-│   └── Extract_New_CSI_Data.ipynb   # CSI extraction from .pcap files
+│   ├── CSI_Data_Processing.ipynb
+│   └── Extract_New_CSI_Data.ipynb
 │
 ├── Processing_Results/
 │   └── CSI Data Preprocessing Final Report
 │
-└── .gitignore                       # Excludes large data files
+├── Raw_Data/
+│   └── (Google Drive Dataset)
+│
+└── .gitignore
 ```
 
 ---
 
-##  System Setup
+# Raw Dataset
 
-### Hardware Requirements
-- **Raspberry Pi 4** (with Nexmon CSI firmware)
-- **WiFi Router** (2.4 GHz, Channel 6)
-- **Laptop** (to run packet sender)
-- **External SSD** (for storing .pcap files)
+The complete raw CSI dataset used in this research is available on Google Drive:
 
-### Software Dependencies
+🔗 **Dataset Link:**  
+https://drive.google.com/drive/folders/1I7YSO5AkefB1NbPpYG5GlZTfsLOr7Gtb?usp=sharing
 
-**On Raspberry Pi:**
+## Dataset Contents
+
+- Raw `.pcap` CSI capture files
+- Metadata files
+- Multiple subjects and activities
+- LOS and NLOS receiver placements
+- Experimental recordings from all Rx positions
+
+## Dataset Organization
+
+```text
+Raw_Data/
+│
+├── S01/
+├── S02/
+├── S03/
+├── S04/
+├── S05/
+└── S06/
+```
+
+## Important Notes
+
+- Large dataset files are not hosted directly on GitHub due to storage limitations.
+- Download the dataset manually using the Google Drive link above.
+- Use `Extract_New_CSI_Data.ipynb` to parse and extract CSI values from `.pcap` files.
+
+---
+
+# Hardware Setup
+
+## Receiver Side
+- Raspberry Pi 4
+- Nexmon CSI enabled firmware
+- External SSD for data storage
+
+## Transmitter Side
+- Standard WiFi Router
+- 2.4 GHz operation
+- Channel 6 fixed configuration
+
+## Packet Generator
+- Laptop/Desktop system
+- Python-based packet sender
+
+---
+
+# Software Requirements
+
+## Raspberry Pi
+
+Install required utilities:
+
 ```bash
-# Nexmon CSI (pre-installed on custom firmware)
-# tcpdump for packet capture
+sudo apt update
 sudo apt install tcpdump
 ```
 
-**On Laptop (Python 3.8+):**
+Nexmon CSI firmware must already be installed.
+
+Nexmon CSI Repository:
+https://github.com/seemoo-lab/nexmon_csi
+
+---
+
+## Python Environment
+
+Install required Python libraries:
+
 ```bash
-pip install numpy pandas matplotlib scipy scikit-learn
+pip install numpy pandas matplotlib scipy scikit-learn jupyter
+```
+
+Optional deep learning libraries:
+
+```bash
+pip install tensorflow keras torch
 ```
 
 ---
 
-##  Quick Start
+# Quick Start
 
-### Step 1: Start CSI Capture on Raspberry Pi
+## Step 1 — Start CSI Capture
+
+On Raspberry Pi:
+
 ```bash
 sudo bash csi_capture.sh
 ```
-The interactive script will guide you through:
-- Subject selection (S01–S06)
-- Receiver position (Rx01–Rx15)
+
+The script will guide you through:
+- Subject selection
+- Receiver position selection
 - Activity selection
-- Duration setting (default: 5 min)
+- Recording duration
 
-### Step 2: Send Packets from Laptop
+---
+
+## Step 2 — Generate WiFi Traffic
+
+On Laptop/Desktop:
+
 ```bash
-python packet_sender.py
+python csi_ping_constant.py
 ```
-Sends **200 UDP packets/sec** to generate WiFi traffic for CSI extraction.
 
-### Step 3: Process Captured Data
-Open `processing/CSI_Data_Processing.ipynb` in Jupyter Notebook to:
-- Extract CSI from `.pcap` files
-- Visualize amplitude/phase across subcarriers
-- Prepare data for ML models
+This continuously sends packets to generate CSI measurements.
 
 ---
 
-##  Data Collection Protocol
+## Step 3 — Process Captured Data
 
-- **6 Subjects** × **6 Activities** × **15 Rx Positions** = **540 recordings**
-- Each recording: **5 minutes** at **200 packets/sec**
-- File naming: `{activity}_{subject}_{rx}_{YYYYMMDD}.pcap`
-- Metadata saved alongside each `.pcap` file
+Open Jupyter Notebook:
 
----
+```bash
+jupyter notebook
+```
 
-##  Technical Details
+Then run:
 
-### CSI Extraction
-- Uses **Nexmon CSI** firmware on Raspberry Pi 4's Broadcom BCM43455c0 WiFi chip
-- Extracts CSI from **OFDM subcarriers** (amplitude and phase)
-- Captures are stored as `.pcap` files with UDP port 5500 filter
+```text
+processing/CSI_Data_Processing.ipynb
+```
 
-### Signal Processing Pipeline
-1. **Raw CSI Extraction** → Parse .pcap files to extract complex CSI values
-2. **Amplitude Computation** → |H(f)| across 64 subcarriers
-3. **Phase Sanitization** → Remove phase offset and noise
-4. **Filtering** → Butterworth low-pass filter to remove noise
-5. **Feature Extraction** → Statistical features (mean, variance, etc.)
-
-### Machine Learning
-- **Input:** Processed CSI amplitude/phase features
-- **Models:** CNN, LSTM, and traditional classifiers (SVM, Random Forest)
-- **Output:** Activity classification (6 classes)
+Functions include:
+- CSI extraction
+- Amplitude visualization
+- Phase sanitization
+- Filtering
+- Feature extraction
 
 ---
 
-##  Collaboration
+# Data Collection Protocol
 
-This project is developed at **DeepEmbed Lab, The Islamia University of Bahawalpur (IUB), Pakistan** in collaboration with a UK-based research team.
+## Experimental Configuration
+
+- 6 Subjects
+- 6 Activities
+- 15 Receiver Positions
+- LOS and NLOS scenarios
+
+## Total Recordings
+
+```text
+6 Subjects × 6 Activities × 15 Positions
+= 540 CSI Recordings
+```
+
+## Recording Parameters
+
+| Parameter | Value |
+|-----------|------|
+| Recording Duration | 5 Minutes |
+| Packet Rate | 200 packets/sec |
+| Channel | 6 |
+| Frequency Band | 2.4 GHz |
+| Bandwidth | 20 MHz |
+
+## File Naming Convention
+
+```text
+{activity}_{subject}_{rx}_{YYYYMMDD}.pcap
+```
+
+Example:
+
+```text
+walk_S01_Rx03_20260115.pcap
+```
 
 ---
 
-##  License
+# CSI Signal Processing Pipeline
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+## 1. Raw CSI Extraction
+Extract CSI values from `.pcap` files using Nexmon CSI tools.
+
+## 2. Amplitude Computation
+
+CSI amplitude is computed as:
+
+```math
+|H(f)| = \sqrt{Re(H)^2 + Im(H)^2}
+```
+
+## 3. Phase Sanitization
+- Remove random phase offsets
+- Eliminate hardware noise
+- Correct phase inconsistencies
+
+## 4. Filtering
+Butterworth low-pass filtering is used to suppress noise and outliers.
+
+## 5. Feature Extraction
+Extract statistical and temporal features:
+- Mean
+- Variance
+- Standard deviation
+- Energy
+- Entropy
+- Temporal dynamics
 
 ---
 
-##  Contact
+# Machine Learning
 
-**Matee ur Rasool**
-BSc Electronic Engineering | The Islamia University of Bahawalpur
- [engrmateeurrasool@gmail.com]
+## Input Features
+- CSI amplitude
+- CSI phase
+- Statistical features
+- Time-domain features
 
+## Models Used
+- CNN
+- LSTM
+- SVM
+- Random Forest
 
+## Output Classes
+- Idle
+- Walk
+- Run
+- Jump
+- Sit/Stand
+- Fall
+
+---
+
+# Experimental Challenges
+
+## Hardware Limitations
+- Limited subcarrier stability
+- Packet drops
+- CSI noise fluctuations
+
+## Environmental Challenges
+- Multipath fading
+- Human movement variability
+- LOS/NLOS sensitivity
+
+## Key Observation
+Good preprocessing significantly improves CSI quality, but hardware instability still affects performance.
+
+---
+
+# Applications
+
+- Smart homes
+- Elderly fall detection
+- Device-free monitoring
+- Indoor activity recognition
+- Ambient intelligence systems
+- Healthcare monitoring
+
+---
+
+# Collaboration
+
+This research project is developed at:
+
+**DeepEmbed Lab**  
+The Islamia University of Bahawalpur (IUB), Pakistan
+
+in collaboration with a UK-based research team.
+
+---
+
+# Future Work
+
+- Multi-user activity recognition
+- Real-time CSI HAR system
+- Transformer-based architectures
+- Domain adaptation
+- CSI data augmentation
+- Cross-environment generalization
+
+---
+
+# License
+
+This project is licensed under the MIT License.
+
+See the [LICENSE](LICENSE) file for details.
+
+---
+
+# Contact
+
+## Matee ur Rasool
+
+BSc Electronic Engineering  
+The Islamia University of Bahawalpur (IUB), Pakistan
+
+📧 engrmateeurrasool@gmail.com
+
+---
+
+# Acknowledgments
+
+- Nexmon CSI Project
+- DeepEmbed Research Lab
+- The Islamia University of Bahawalpur
+- Open-source signal processing community
